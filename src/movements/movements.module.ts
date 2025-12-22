@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { MovementsController } from './movements.controller';
 
-@Module({})
+@Module({
+  controllers: [MovementsController],
+})
 export class MovementsModule {}

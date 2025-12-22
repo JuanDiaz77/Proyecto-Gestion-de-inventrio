@@ -4,11 +4,55 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
+  password  String
+  status    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  role      Role
+  movements Movement[]
 }
 
 model Product {
-  id     Int    @id @default(autoincrement())
-  sku    String @unique
-  name   String
-  active Boolean @default(true)
+  id        Int        @id @default(autoincrement())
+  sku       String     @unique
+  name      String
+  active    Boolean    @default(true)
+  inventory Inventory?
+  movements Movement[]
+}
+
+model Inventory {
+  id        Int     @id @default(autoincrement())
+  productId Int     @unique
+  stock     Int
+  minStock  Int
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model Movement {
+  id        Int          @id @default(autoincrement())
+  type      MovementType
+  quantity  Int
+  createdAt DateTime     @default(now())
+  productId Int
+  userId    Int
+  product   Product      @relation(fields: [productId], references: [id])
+  user      User         @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  OPERADOR
+  CONSULTA
+}
+
+enum MovementType {
+  IN
+  OUT
+  ADJUSTMENT
 }
