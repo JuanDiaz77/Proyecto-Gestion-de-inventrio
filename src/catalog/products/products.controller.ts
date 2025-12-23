@@ -1,12 +1,10 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
-import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
 import { Role } from '@prisma/client';
+import { CreateProductDto } from './dto/create-product.dto';
 
 @Controller('products')
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
@@ -14,5 +12,11 @@ export class ProductsController {
   @Roles(Role.ADMIN, Role.OPERADOR)
   findAll() {
     return this.productsService.findAll();
+  }
+
+  @Post()
+  @Roles(Role.ADMIN)
+  create(@Body() dto: CreateProductDto) {
+    return this.productsService.create(dto);
   }
 }

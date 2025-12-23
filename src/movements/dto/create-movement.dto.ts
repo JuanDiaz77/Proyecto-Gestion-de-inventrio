@@ -1,14 +1,14 @@
-import { IsEnum, IsInt, IsPositive } from 'class-validator';
+import { IsEnum, IsInt, Min } from 'class-validator';
 import { MovementType } from '@prisma/client';
 
 export class CreateMovementDto {
   @IsInt()
   productId: number;
 
+  @IsInt()
+  @Min(0)
+  quantity: number;
+
   @IsEnum(MovementType)
   type: MovementType;
-
-  @IsInt()
-  @IsPositive()
-  quantity: number;
 }
